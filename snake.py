@@ -1,60 +1,57 @@
 from turtle import Turtle
 
-STARTING_POSITIONS = [(0, 0), (-20, 0), (-40, 0)]
-MOVE_DISTANCE = 20
-UP = 90
-DOWN = 270
-RIGHT = 0
-LEFT = 180
-
+ALIGN = "center"
+FONT = ("Courier", 20, "normal")
 
 class Snake:
-
     def __init__(self):
+        """
+        Initialize the snake with its starting segments and direction.
+        """
         self.segment_list = []
         self.create_snake()
-        self.head = self.segment_list[0]
+        self.head = self.segment_list[0]  # The first segment is the snake's head
 
     def create_snake(self):
-        for position in STARTING_POSITIONS:
-            self.add_segment(position)
+        """
+        Create the initial snake with 3 segments.
+        """
+        for i in range(3):
+            self.add_segment()
 
-    def add_segment(self, position):
-        new_segment = Turtle("square")
-        new_segment.color("white")
-        new_segment.penup()
-        new_segment.goto(position)
-        self.segment_list.append(new_segment)
-
-    def move(self):
-        for i in range(len(self.segment_list) - 1, 0, -1):
-            new_x = self.segment_list[i - 1].xcor()
-            new_y = self.segment_list[i - 1].ycor()
-            self.segment_list[i].goto(new_x, new_y)
-        self.head.forward(MOVE_DISTANCE)
-
-    def up(self):
-        if self.head.heading() != DOWN:
-            self.head.setheading(UP)
-
-    def down(self):
-        if self.head.heading() != UP:
-            self.head.setheading(DOWN)
-
-    def right(self):
-        if self.head.heading() != LEFT:
-            self.head.setheading(RIGHT)
-
-    def left(self):
-        if self.head.heading() != RIGHT:
-            self.head.setheading(LEFT)
+    def add_segment(self):
+        """
+        Add a new segment to the snake at the current head's position.
+        """
+        segment = Turtle()
+        segment.shape("square")
+        segment.color("white")
+        segment.penup()
+        self.segment_list.append(segment)
+        self.update_segments()
 
     def extend(self):
-        self.add_segment(self.segment_list[-1].position())
+        """
+        Add a new segment to the snake's body when it eats food.
+        """
+        self.add_segment()
+
+    def move(self):
+        """
+        Move the snake forward. Each segment follows the one in front of it.
+        """
+        for i in range(len(self.segment_list) - 1, 0, -1):
+            x = self.segment_list[i - 1].xcor()
+            y = self.segment_list[i - 1].ycor()
+            self.segment_list[i].goto(x, y)
+        self.head.forward(20)  # Move the head forward by 20 units
 
     def snake_reset(self):
-        for seg in self.segment_list:
-            seg.goto(1000, 1000)
-        self.segment_list.clear()
-        self.create_snake()
-        self.head = self.segment_list[0]
+        """
+        Reset the snake to its initial state.
+        """
+        for segment in self.segment_list:
+            segment.goto(1000, 1000)  # Move segments off-screen
+        self.segment_list.clear()  # Clear the list of segments
+        self.create_snake()  # Recreate the snake
+        self.head = self.segment_list[0]  # Reset the head
